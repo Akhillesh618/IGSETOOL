@@ -1,47 +1,122 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import axios from 'axios';
+import './Login.css';
 
-function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const history = useHistory();
+const Login = () => {
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    name: '',
+    address: '',
+    propertyType: '',
+    bedrooms: '',
+    voucherCode: '',
+  });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('/api/login', { email, password });
-      localStorage.setItem('token', res.data.token);
-      history.push('/');
-    } catch (err) {
-      console.error(err);
-    }
+  const [isLoginForm, setIsLoginForm] = useState(true);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setForm({ ...form, [name]: value });
+  };
+
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    // Perform login or registration here
+    console.log(form);
+  };
+
+  const toggleForm = () => {
+    setIsLoginForm(!isLoginForm);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Email:
+    <div className="login-container">
+      <form onSubmit={handleFormSubmit}>
+        <h1>{isLoginForm ? 'Login' : 'Register'}</h1>
+        {!isLoginForm && (
+          <>
+           <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleInputChange}
+          required
+            />
+              <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={form.password}
+            onChange={handleInputChange}
+              required
+              />
+            <input
+              type="text"
+              name="address"
+              placeholder="Address"
+              value={form.address}
+              onChange={handleInputChange}
+              required
+            />
+            <select
+              name="propertyType"
+              value={form.propertyType}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select property type</option>
+              <option value="detached">Detached</option>
+              <option value="semi-detached">Semi-detached</option>
+              <option value="terraced">Terraced</option>
+              <option value="flat">Flat</option>
+              <option value="cottage">Cottage</option>
+              <option value="bungalow">Bungalow</option>
+              <option value="mansion">Mansion</option>
+            </select>
+            <input
+              type="number"
+              name="bedrooms"
+              placeholder="Number of bedrooms"
+              value={form.bedrooms}
+              onChange={handleInputChange}
+              required
+            />
+            <input
+              type="text"
+              name="voucherCode"
+              placeholder="Voucher code"
+              value={form.voucherCode}
+              onChange={handleInputChange}
+              required
+            />
+          </>
+        )}
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleInputChange}
+          required
         />
-      </label>
-      <br />
-      <label>
-        Password:
         <input
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleInputChange}
+          required
         />
-      </label>
-      <br />
-      <button type="submit">Log In</button>
-      <Link to="/register">Don't have an account? Register here.</Link>
-    </form>
+       
+        <button type="submit">{isLoginForm ? 'Login' : 'Register'}</button>
+        <button type="button" onClick={toggleForm}>
+          {isLoginForm ? 'Need to register?' : 'Already have an account?'}
+        </button>
+      </form>
+    </div>
   );
-}
+};
 
 export default Login;
+
